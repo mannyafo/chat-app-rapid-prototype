@@ -1,17 +1,20 @@
 package chatProto.client;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.net.Socket;
 
@@ -123,8 +126,64 @@ public class UserInterface extends Application {
         * - Send messages
         * - Logout (to login screen)
         * */
-            
+            // Message input box
+            TextField messageBox = new TextField();
+            messageBox.setPrefWidth(400);
 
+            // Send button functionality
+            Button sendButton = new Button("Send");
+            sendButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+                public void handle(ActionEvent e) {
+
+                    clientThread.addPendingMessage(messageBox.getText());
+                    messageBox.setText(null);
+                }
+            });
+
+            // Logout button functionality
+            Button logoutButton = new Button("Logout");
+            logoutButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e) {
+                    window.setScene(loginScreen);
+                    window.setTitle("ChatRoom");
+
+                }
+            });
+
+            // Layout for the lower section of the chat gui
+            HBox footerLayout = new HBox();
+            footerLayout.getChildren().addAll(messageBox, sendButton, logoutButton);
+            footerLayout.setSpacing(5);
+            footerLayout.setPadding(new Insets(0,0,5,5));
+
+            // Listview displaying messages in the chat gui
+            ListView<String> chatList = new ListView<String>();
+            messages = FXCollections.observableArrayList();
+            chatList.setItems(messages);
+            chatList.setPrefWidth(600);
+            chatList.setPrefHeight(550);
+
+            // Overall layout of the chat gui
+            VBox chatLayout = new VBox(10);
+            chatLayout.getChildren().addAll(chatList,footerLayout);
+            chatScreen = new Scene(chatLayout, 600, 400);
+
+        /*
+        * Window initialisation:
+        */
+        window.setScene(loginScreen);
+        window.setTitle("ChatRoom");
+        window.show();
+    }
+
+    /**
+     * Add a string message to the messages observable arraylist
+     * @param message is the message to add to the list
+     */
+    public static void addMessageToDisplay(String message) {
+        messages.add(message);
     }
 
 }

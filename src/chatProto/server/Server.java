@@ -101,8 +101,8 @@ public class Server {
                 executorService.execute(session);
 
                 // Console message and session list addition
-                System.out.println("ClientTest Connected!");
                 sessions.add(session);
+                System.out.println("New Client Connected!, total clients connected: " + sessions.size());
 
             }catch( IOException e ) {
                 System.out.println("Server error - unable to accept connection request(s)");
